@@ -101,8 +101,12 @@ export default {
                             },
                         }
                     )
-                    .then((response) => {
-                        console.log(response);
+                    .then((r) => {
+                        localStorage.setItem(
+                            "x_xsrf_token",
+                            r.config.headers["X-XSRF-TOKEN"]
+                        );
+                        this.$router.push({ name: "user.personal" });
                     });
             });
         },
