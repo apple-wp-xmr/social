@@ -1,14 +1,19 @@
 <template>
-    <h1 class="text-3xl font-bold underline">Hello world!</h1>
-    <router-link v-if="!token" :to="{ name: 'user.login' }">Login</router-link>
-    <router-link v-if="!token" :to="{ name: 'user.registration' }"
-        >Registration</router-link
-    >
-    <router-link v-if="token" :to="{ name: 'user.personal' }"
-        >Personal</router-link
-    >
-    <a v-if="token" href="" @click.prevent="logout">Logout</a>
-    <router-view></router-view>
+    <div>
+        <div class="flex justify-between p-8 w-96 mx-auto">
+            <router-link v-if="!token" :to="{ name: 'user.login' }"
+                >Login</router-link
+            >
+            <router-link v-if="!token" :to="{ name: 'user.registration' }"
+                >Registration</router-link
+            >
+            <router-link v-if="token" :to="{ name: 'user.personal' }"
+                >Personal</router-link
+            >
+            <a v-if="token" href="" @click.prevent="logout">Logout</a>
+        </div>
+        <router-view></router-view>
+    </div>
 </template>
 
 <script>

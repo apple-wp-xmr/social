@@ -1,5 +1,5 @@
 <template>
-    <div>Personal</div>
+    <div class="w-96 mx-auto">Personal</div>
 </template>
 <script>
 import axios from "axios";
