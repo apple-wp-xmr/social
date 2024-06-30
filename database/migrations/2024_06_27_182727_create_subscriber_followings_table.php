@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('subscriber_followings', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('subscriber_id')->index()->constrainded('users');
+            $table->foreignId('following_id')->index()->constrainded('users');
             $table->timestamps();
         });
     }
