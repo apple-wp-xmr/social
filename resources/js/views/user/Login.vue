@@ -79,7 +79,7 @@ export default {
                         this.$router.push({ name: "user.personal" });
                     })
                     .catch((err) => {
-                        consloel.log(err.response);
+                        console.log(err);
                     });
             });
         },
