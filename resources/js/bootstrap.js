@@ -1,4 +1,5 @@
 import _ from "lodash";
+import router from "./router";
 window._ = _;
 
 /**
@@ -15,7 +16,6 @@ window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 window.axios.defaults.withCredentials = true;
 axios.interceptors.response.use(
     (response) => {
-        // If the response is successful, just return the response
         return response;
     },
     (error) => {

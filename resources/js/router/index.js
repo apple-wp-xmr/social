@@ -33,18 +33,16 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    // axios
-    //     .get("/api/user")
-    //     .then((res) => {
-    //         console.log(res.data);
-    //     })
-    //     .catch((e) => {
-    //         if (e.response.status === 401) {
-    //             localStorage.key("x_xsrf_token")
-    //                 ? localStorage.removeItem("x_xsrf_token")
-    //                 : "";
-    //         }
-    //     });
+    axios
+        .get("/api/user")
+        .then((res) => {})
+        .catch((e) => {
+            if (e.response.status === 401) {
+                localStorage.key("x_xsrf_token")
+                    ? localStorage.removeItem("x_xsrf_token")
+                    : "";
+            }
+        });
 
     const token = localStorage.getItem("x_xsrf_token");
     if (!token) {

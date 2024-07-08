@@ -18,8 +18,14 @@
             </div>
             <div class="flex mb-3 items-center">
                 <div>
-                    <input ref="file" type="file" class="hidden" />
+                    <input
+                        @change="storeImage"
+                        ref="file"
+                        type="file"
+                        class="hidden"
+                    />
                     <a
+                        @click.prevent="selectImage"
                         href="#"
                         class="block p-2 w-16 bg-sky-500 text-white text-center rounded-3xl border text-sm"
                         >Image</a
@@ -30,10 +36,11 @@
                 </div>
             </div>
             <div v-if="image" class="mb-2">
-                <img src="" alt="preview" />
+                <img :src="image.url" alt="preview" />
             </div>
             <div>
                 <a
+                    @click.prevent="storePost"
                     class="block p-2 w-32 bg-green-600 text-white text-center rounded-3xl border hover:bg-white hover:text-green-600 hover:border ml-auto"
                     href="#"
                     >publish</a
@@ -47,6 +54,40 @@ import axios from "axios";
 
 export default {
     name: "Personal",
+    data() {
+        return {
+            title: "",
+            content: "",
+            image: null,
+        };
+    },
+    methods: {
+        selectImage() {
+            let imageInupt = this.$refs.file;
+            imageInupt.click();
+        },
+        storeImage(e) {
+            let file = e.target.files[0];
+            let form = new FormData();
+            form.append("image", file);
+
+            axios.post("/api/post_image", form).then((r) => {
+                this.image = r.data.data;
+            });
+        },
+        storePost() {
+            const id = this.image ? this.image.id : null;
+            axios
+                .post("/api/post", {
+                    title: this.title,
+                    content: this.content,
+                    image_id: id,
+                })
+                .then((r) => {
+                    (this.title = ""), (this.content = ""), (this.image = null);
+                });
+        },
+    },
 };
 </script>
 <style scoped></style>
