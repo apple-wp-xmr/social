@@ -8,9 +8,14 @@ use App\Models\Post;
 use App\Models\PostImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\PostInc;
 
 class PostController extends Controller
 {
+    public function index(){
+        $posts = Post::where('user_id', auth()->id())->latest()->get();
+        return PostResource::collection($posts);
+    }
     public function store(PostRequest $request){
         $data = $request->validated();
 
@@ -27,6 +32,7 @@ class PostController extends Controller
                     'post_id' => $post->id
                 ]);
             }
+            PostImage::clearStorage();
            
             DB::commit();
         }catch(\Exception $e){
@@ -38,4 +44,5 @@ class PostController extends Controller
 
         return new PostResource($post);
     }
+
 }

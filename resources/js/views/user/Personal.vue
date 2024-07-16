@@ -47,11 +47,18 @@
                 >
             </div>
         </div>
+        <Post
+            v-if="posts"
+            v-for="post in posts"
+            :post="post"
+            :key="post.id"
+        ></Post>
+        <p v-else>Loading...</p>
     </div>
 </template>
 <script>
 import axios from "axios";
-
+import Post from "../../components/Post.vue";
 export default {
     name: "Personal",
     data() {
@@ -59,7 +66,11 @@ export default {
             title: "",
             content: "",
             image: null,
+            posts: [],
         };
+    },
+    mounted() {
+        this.getPosts();
     },
     methods: {
         selectImage() {
@@ -85,8 +96,17 @@ export default {
                 })
                 .then((r) => {
                     (this.title = ""), (this.content = ""), (this.image = null);
+                    this.posts.unshift(r.data.data);
                 });
         },
+        getPosts() {
+            axios.get("/api/posts").then((res) => {
+                this.posts = res.data.data;
+            });
+        },
+    },
+    components: {
+        Post,
     },
 };
 </script>
