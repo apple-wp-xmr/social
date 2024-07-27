@@ -18,4 +18,8 @@ class Post extends Model
     public function getDateAttribute(){
         return $this->created_at->diffForHumans();
     }
+
+    public function likedUsers(){
+        return $this->belongsToMany(User::class, 'liked_posts', 'post_id', 'user_id');
+    }
 }

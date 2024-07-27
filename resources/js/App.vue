@@ -7,6 +7,9 @@
             <router-link v-if="!token" :to="{ name: 'user.registration' }"
                 >Registration</router-link
             >
+            <router-link v-if="token" :to="{ name: 'user.feed' }"
+                >Feed</router-link
+            >
             <router-link v-if="token" :to="{ name: 'user.index' }"
                 >Users</router-link
             >

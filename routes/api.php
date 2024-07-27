@@ -23,9 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/posts', [PostController::class, 'index']);
     Route::post('/post', [PostController::class, 'store']);
+    Route::get('/posts/{post}/toggle_like', [PostController::class, 'toggleLike']);
     Route::post('/post_image', [PostImageController::class, 'store']);
 
     Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/feed', [UserController::class, 'feed']);
     Route::get('/users/{user}/posts', [UserController::class, 'posts']);
+    Route::get('/users/{user}/toggle_following', [UserController::class, 'toggleFollowing']);
 });
 
