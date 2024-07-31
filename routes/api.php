@@ -25,6 +25,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/post', [PostController::class, 'store']);
     Route::get('/posts/{post}/toggle_like', [PostController::class, 'toggleLike']);
     Route::post('/post_image', [PostImageController::class, 'store']);
+    Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/feed', [UserController::class, 'feed']);

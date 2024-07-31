@@ -59,5 +59,15 @@ class PostController extends Controller
         $data['likes_count'] = $post->likedUsers->count();
         return $data;
     }
+    public function destroy(Post $post){
+        if($post->user_id != auth()->id()){
+            return response()->json('You anrn\'t the author');
+        }
+        if($post->image){
+            $post->image->delete();
+        }
+        $post->delete();
+        return response()->json("Post $post->id has been deleted!");
+    }
 
 }
