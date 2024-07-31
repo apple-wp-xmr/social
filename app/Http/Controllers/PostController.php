@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Comment\CommentRequest;
 use App\Http\Requests\Post\PostRequest;
+use App\Http\Requests\Post\RepostRequest;
+use App\Http\Resources\Comment\CommentResource;
 use App\Http\Resources\Post\PostResource;
+use App\Http\Resources\Post\RepostResource;
+use App\Models\Comment;
 use App\Models\LikedPost;
 use App\Models\Post;
 use App\Models\PostImage;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\PostInc;
+
 
 class PostController extends Controller
 {
@@ -68,6 +73,28 @@ class PostController extends Controller
         }
         $post->delete();
         return response()->json("Post $post->id has been deleted!");
+    }
+    public function repost(Post $post, RepostRequest $repost){
+        $data = $repost->validated();
+        $data['user_id'] = auth()->id();
+        $data['reposted_id'] = $post->id;
+        $response = Post::create($data);
+
+        return new RepostResource($response);
+
+    }
+
+    public function getComments(Post $post){
+        return CommentResource::collection($post->comments);
+    }
+    public function addComment(Post $post, CommentRequest $comment){
+        $data = $comment->validated();
+        $data['user_id'] = auth()->id();
+        $data['post_id'] = $post->id;
+
+        $comment = Comment::create($data);
+        return new CommentResource($comment);
+        
     }
 
 }

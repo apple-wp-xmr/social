@@ -27,6 +27,10 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::post('/post_image', [PostImageController::class, 'store']);
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 
+    Route::post('/posts/{post}/repost', [PostController::class, 'repost']);
+    Route::get('/posts/{post}/comments', [PostController::class, 'getComments']);
+    Route::post('/posts/{post}/add_comment', [PostController::class, 'addComment']);
+
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/feed', [UserController::class, 'feed']);
     Route::get('/users/{user}/posts', [UserController::class, 'posts']);

@@ -8,6 +8,12 @@
                     type="text"
                     placeholder="title"
                 />
+                <p
+                    class="text-sm text-red-500 mb-2"
+                    v-for="error in errors.title"
+                >
+                    {{ error }}
+                </p>
             </div>
             <div>
                 <textarea
@@ -15,6 +21,12 @@
                     class="w-96 border rounded-3xl border-1 border-stlate-400 p-2 mb-3"
                     placeholder="content"
                 ></textarea>
+                <p
+                    class="text-sm text-red-500 mb-2"
+                    v-for="error in errors.content"
+                >
+                    {{ error }}
+                </p>
             </div>
             <div class="flex mb-3 items-center">
                 <div>
@@ -67,6 +79,7 @@ export default {
             content: "",
             image: null,
             posts: [],
+            errors: [],
         };
     },
     mounted() {
@@ -97,6 +110,9 @@ export default {
                 .then((r) => {
                     (this.title = ""), (this.content = ""), (this.image = null);
                     this.posts.unshift(r.data.data);
+                })
+                .catch((e) => {
+                    this.errors = e.response.data.errors;
                 });
         },
         getPosts() {
