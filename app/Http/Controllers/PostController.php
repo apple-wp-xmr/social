@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
 class PostController extends Controller
 {
     public function index(){
-        $posts = Post::where('user_id', auth()->id())->latest()->get();
+        $posts = Post::where('user_id', auth()->id())->withCount('reposted_by_posts')->latest()->get();
 
         $likeIds = LikedPost::where('user_id', auth()->user()->id)->get('post_id')->pluck('post_id')->toArray();
         foreach($posts as $post){
@@ -83,9 +83,9 @@ class PostController extends Controller
         return new RepostResource($response);
 
     }
-
     public function getComments(Post $post){
-        return CommentResource::collection($post->comments);
+        $comments = $post->comments()->latest()->get();
+        return CommentResource::collection($comments);
     }
     public function addComment(Post $post, CommentRequest $comment){
         $data = $comment->validated();

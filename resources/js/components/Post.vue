@@ -1,6 +1,10 @@
 <template>
     <div class="mb-7">
         <div class="text-xl font-bold text-gray-800">{{ post.title }}</div>
+        <router-link
+            :to="{ name: 'user.posts', params: { id: post.user.id } }"
+            >{{ post.user.name }}</router-link
+        >
         <div class="text-gray-700">{{ post.content }}</div>
         <img
             v-if="post.image_url"
@@ -12,6 +16,13 @@
             v-if="post.repost"
             class="mt-4 p-4 border border-gray-300 rounded-lg bg-gray-50 shadow-sm"
         >
+            <router-link
+                :to="{
+                    name: 'user.posts',
+                    params: { id: post.repost.user.id },
+                }"
+                >{{ post.user.name }}</router-link
+            >
             <div class="text-md font-semibold">{{ post.repost.title }}</div>
             <div class="text-gray-600">{{ post.repost.content }}</div>
             <img
@@ -123,23 +134,48 @@
             class="space-y-4 p-4 bg-gray-100 rounded-lg shadow-md"
         >
             <button
-                v-if="post.comments_count"
+                v-if="post.comments_count && !isShowed"
                 @click.prevent="getComments(post)"
                 class="px-3 py-1 text-xs bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none"
             >
                 Show {{ post.comments_count }} comments
             </button>
-            <div v-if="comments" class="space-y-4 mt-4">
+            <button
+                v-if="post.comments_count && isShowed"
+                @click.prevent="isShowed = false"
+                class="px-3 py-1 text-xs bg-blue-500 text-white rounded-full hover:bg-blue-600 focus:outline-none"
+            >
+                Hide comments
+            </button>
+            <div v-if="comments && isShowed" class="space-y-4 mt-4">
                 <div
                     v-for="comment in comments"
                     :key="comment.id"
                     class="bg-white p-4 rounded-lg shadow-sm"
                 >
-                    <p class="text-gray-700">{{ comment.body }}</p>
+                    <p class="text-gray-700">
+                        <span class="text-sky-400">
+                            {{
+                                comment.answerd_for_user
+                                    ? comment.answerd_for_user + " ,"
+                                    : ""
+                            }}
+                        </span>
+                        {{ comment.body }}
+                    </p>
                     <div class="flex justify-between">
-                        <p class="text-sm text-gray-500">
-                            Author: {{ comment.user.name }}
-                        </p>
+                        <div class="flex">
+                            <a
+                                href="#"
+                                @click.prevent="setCommentReply(comment)"
+                                class="text-sm text-sky-400"
+                                >Reply to</a
+                            >
+                            <p class="text-sm text-gray-500 ml-3">
+                                Author: {{ comment.user.name }}
+                            </p>
+                        </div>
+
                         <p class="text-sm text-gray-500">
                             {{ comment.date }}
                         </p>
@@ -149,6 +185,17 @@
 
             <div class="space-y-4">
                 <div>
+                    <div v-if="commentReply" class="flex justify-between">
+                        <p class="ml-2">
+                            Replied to {{ commentReply.user.name }}
+                        </p>
+                        <p
+                            @click="commentReply = null"
+                            class="cursor-pointer text-sm mr-2 text-sky-500"
+                        >
+                            Cancel
+                        </p>
+                    </div>
                     <input
                         v-model="body"
                         class="w-full border rounded-3xl border-gray-400 p-2 focus:border-green-500 focus:outline-none focus:ring"
@@ -169,6 +216,8 @@
 </template>
 
 <script>
+import { comment } from "postcss";
+
 export default {
     name: "Post",
     props: ["post"],
@@ -179,6 +228,8 @@ export default {
             body: "",
             is_repost: false,
             comments: [],
+            isShowed: false,
+            commentReply: null,
         };
     },
     methods: {
@@ -205,19 +256,34 @@ export default {
                     content: this.content,
                 })
                 .then((res) => {
-                    console.log(res);
+                    this.title = null;
+                    this.content = null;
+                    this.is_repost = false;
+                    post.reposted_by_posts_count++;
                 });
         },
         getComments(post) {
             axios.get(`/api/posts/${post.id}/comments`).then((res) => {
                 this.comments = res.data.data;
+                this.isShowed = true;
             });
         },
         comment(post) {
-            axios.post(`/api/posts/${post.id}/add_comment`, {
-                body: this.body,
-            });
-            this.getComments(post);
+            axios
+                .post(`/api/posts/${post.id}/add_comment`, {
+                    body: this.body,
+                    parent_id: this.commentReply ? this.commentReply.id : null,
+                })
+                .then((res) => {
+                    this.isShowed = true;
+                    this.body = "";
+                    this.comments.unshift(res.data.data);
+                    this.parentId = null;
+                    post.comments_count++;
+                });
+        },
+        setCommentReply(comment) {
+            this.commentReply = comment;
         },
     },
 };

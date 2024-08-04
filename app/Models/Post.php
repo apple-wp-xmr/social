@@ -11,7 +11,7 @@ class Post extends Model
     protected $table = 'posts';
     protected $guarded = false;
     protected $with = ['image'];
-    protected $withCount = ['comments'];
+    protected $withCount = ['comments',];
 
     public function image(){
         return $this->hasOne(PostImage::class, 'post_id', 'id')->whereNotNull('post_id');
@@ -21,7 +21,7 @@ class Post extends Model
     }
 
     public function likedUsers(){
-        return $this->belongsToMany(User::class, 'liked_posts', 'post_id', 'user_id');
+        return $this->belongsToMany(User::class, 'liked_posts', 'post_id', 'user_id', 'id', 'id');
     }
 
     public function repost(){
@@ -30,5 +30,12 @@ class Post extends Model
 
     public function comments(){
         return $this->hasMany(Comment::class, 'post_id', 'id');
+    }
+
+    public function reposted_by_posts(){
+        return $this->hasMany(Post::class, 'reposted_id', 'id');
+    }
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

@@ -43,7 +43,7 @@
                         >Image</a
                     >
                 </div>
-                <div class="ml-3">
+                <div class="ml-3" v-if="image">
                     <a @click.prevent="image = null">Cancel</a>
                 </div>
             </div>

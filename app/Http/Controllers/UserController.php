@@ -24,7 +24,14 @@ class UserController extends Controller
     }
 
     public function posts(User $user){
-        return PostResource::collection( $user->posts);
+        $posts = $user->posts()->withCount('reposted_by_posts')->latest()->get();
+        $likeIds = LikedPost::where('user_id', auth()->user()->id)->get('post_id')->pluck('post_id')->toArray();
+        foreach($posts as $post){
+            if(in_array($post->id, $likeIds)){
+                $post->is_liked = true;
+            }
+        }
+        return PostResource::collection( $posts);
     }
 
     public function toggleFollowing(User $user){
@@ -36,7 +43,7 @@ class UserController extends Controller
     public function feed(){
         $followedIds = auth()->user()->followedUsers->pluck('id')->toArray();
         $likedPostsIds = LikedPost::where('user_id', auth()->user()->id)->get('post_id')->pluck('post_id')->toArray();
-        $posts = Post::whereIn('user_id', $followedIds)->whereNotIn('id', $likedPostsIds)->get();
+        $posts = Post::whereIn('user_id', $followedIds)->withCount('reposted_by_posts')->whereNotIn('id', $likedPostsIds)->get();
 
         return PostResource::collection($posts);
     }

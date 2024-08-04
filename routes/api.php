@@ -28,8 +28,8 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::delete('/posts/{post}', [PostController::class, 'destroy']);
 
     Route::post('/posts/{post}/repost', [PostController::class, 'repost']);
-    Route::get('/posts/{post}/comments', [PostController::class, 'getComments']);
     Route::post('/posts/{post}/add_comment', [PostController::class, 'addComment']);
+    Route::get('/posts/{post}/comments', [PostController::class, 'getComments']);
 
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/users/feed', [UserController::class, 'feed']);
