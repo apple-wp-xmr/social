@@ -92,7 +92,6 @@ export default {
     methods: {
         getStats() {
             axios.post("/api/users/stats", { id: null }).then((res) => {
-                console.log(res.data.data);
                 this.stats = res.data.data;
             });
         },

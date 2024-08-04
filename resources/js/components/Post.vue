@@ -234,7 +234,7 @@ export default {
     },
     methods: {
         toggleLike(post) {
-            axios.get(`/api/posts/${post.id}/toggle_like`).then((res) => {
+            axios.post(`/api/posts/${post.id}/toggle_like`).then((res) => {
                 post.is_liked = res.data.is_liked;
                 post.likes_count = res.data.likes_count;
             });
