@@ -1,5 +1,6 @@
 <template>
     <div class="w-96 mx-auto">
+        <Stat :stats="stats"></Stat>
         <div>
             <div>
                 <input
@@ -71,6 +72,7 @@
 <script>
 import axios from "axios";
 import Post from "../../components/Post.vue";
+import Stat from "../../components/Stat.vue";
 export default {
     name: "Personal",
     data() {
@@ -80,12 +82,20 @@ export default {
             image: null,
             posts: [],
             errors: [],
+            stats: [],
         };
     },
     mounted() {
         this.getPosts();
+        this.getStats();
     },
     methods: {
+        getStats() {
+            axios.post("/api/users/stats", { id: null }).then((res) => {
+                console.log(res.data.data);
+                this.stats = res.data.data;
+            });
+        },
         selectImage() {
             let imageInupt = this.$refs.file;
             imageInupt.click();
@@ -123,6 +133,7 @@ export default {
     },
     components: {
         Post,
+        Stat,
     },
 };
 </script>

@@ -1,5 +1,6 @@
 <template>
     <div class="w-96 mx-auto">
+        <Stat :stats="stats"></Stat>
         <Post
             v-if="posts"
             v-for="post in posts"
@@ -12,6 +13,7 @@
 <script>
 import axios from "axios";
 import Post from "../../components/Post.vue";
+import Stat from "../../components/Stat.vue";
 export default {
     name: "Posts",
     data() {
@@ -22,6 +24,7 @@ export default {
     },
     mounted() {
         this.getPosts();
+        this.getStats();
     },
     methods: {
         getPosts() {
@@ -30,9 +33,16 @@ export default {
                 this.posts = res.data.data;
             });
         },
+        getStats() {
+            axios.post("/api/users/stats", { id: this.id }).then((res) => {
+                console.log(res.data.data);
+                this.stats = res.data.data;
+            });
+        },
     },
     components: {
         Post,
+        Stat,
     },
 };
 </script>

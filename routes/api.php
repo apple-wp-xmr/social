@@ -35,5 +35,6 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/users/feed', [UserController::class, 'feed']);
     Route::get('/users/{user}/posts', [UserController::class, 'posts']);
     Route::get('/users/{user}/toggle_following', [UserController::class, 'toggleFollowing']);
+    Route::post('/users/stats', [UserController::class, 'getStats']);
 });
 
